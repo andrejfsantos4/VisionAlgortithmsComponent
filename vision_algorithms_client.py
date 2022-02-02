@@ -1,10 +1,10 @@
-import argparse
 import logging
 import grpc
-import vision_algorithms_pb2
-import vision_algorithms_pb2_grpc
 import numpy as np
 
+import vision_algorithms_pb2
+import vision_algorithms_pb2_grpc
+import parsing
 
 # def parse_args():
 #     parser = argparse.ArgumentParser(description='Client for testing Vision Algorithms component.')
@@ -12,45 +12,6 @@ import numpy as np
 #                         help='Algorithm to test (homog_calc, klt, etc)')
 #
 #     return parser.parse_args()
-
-def array_to_msg(line):
-    """Returns a message of type Float1DArray with elements in list-like argument."""
-    array_msg = vision_algorithms_pb2.Float1DArray()
-    array_msg.elems.extend(line.tolist())
-    return array_msg
-
-
-def matrix_to_msg(matrix):
-    """Returns a message of type Float2DArray with elements from the input two-dimensional array."""
-    matrix_msg = vision_algorithms_pb2.Float2DArray()
-    if matrix is None:
-        return matrix_msg
-    for i in range(matrix.shape[0]):
-        matrix_msg.lines.append(array_to_msg(matrix[i, :]))
-    return matrix_msg
-
-
-def msg_to_matrix(msg, n_lines=None, n_cols=None):
-    """Decodes a 2D array from a protobuf message and returns it as numpy array.
-
-    :param msg: Message of type Float2DArray
-    :param n_lines: (Optional) Length of array. If not indicated, it is inferred from the message.
-    :param n_cols: (Optional) Width of array. If not indicated, it is inferred from the first line of the array.
-    :return: Numpy array
-    """
-    # Get input data size
-    if n_lines is None or n_cols is None:
-        n_lines = len(msg.lines)
-        n_cols = len(msg.lines[0].elems)
-
-    # Build array from message
-    matrix = np.zeros((n_lines, n_cols))
-    for i in range(n_lines):
-        if len(msg.lines[i].elems) != n_cols:  # Detect line with more than n_cols elements
-            logging.error("Detected inconsistent number of elements per line.")
-            return None
-        matrix[i] = np.array(msg.lines[i].elems)
-    return matrix
 
 
 def get_request_homog_calc(matrix1, matrix2):
@@ -60,22 +21,27 @@ def get_request_homog_calc(matrix1, matrix2):
     matrix1 -- source points to append to message
     matrix2 -- destination points to append to message
     """
-    matrix1_msg = matrix_to_msg(matrix1)
-    matrix2_msg = matrix_to_msg(matrix2)
-    return vision_algorithms_pb2.HomogCalcRequest(source_pts=matrix1_msg, dest_pts=matrix2_msg, ransac_thresh=5, max_ransac_iters=200)
+    matrix1_msg = parsing.matrix_to_msg(matrix1)
+    matrix2_msg = parsing.matrix_to_msg(matrix2)
+    return vision_algorithms_pb2.HomogCalcRequest(source_pts=matrix1_msg, dest_pts=matrix2_msg, ransac_thresh=5,
+                                                  max_ransac_iters=200)
 
 
-def homog_calc(stub):
+def homog_calc_test(stub):
     # Generate ground truth homography
-    rotation = np.array([[np.cos(0.7), -np.sin(0.7), 0],
-                         [np.sin(0.7), np.cos(0.7), 0],
+    angle = 0.1
+    rotation = np.array([[np.cos(angle), -np.sin(angle), 0],
+                         [np.sin(angle), np.cos(angle), 0],
                          [0, 0, 1]])
-    affine = np.array([[1, 0.1, 0],
-                       [0.2, 1, 0],
+    a = 0
+    b = 0
+    affine = np.array([[1, a, 0],
+                       [b, 1, 0],
                        [0, 0, 1]])
+    c = 0
     projective = np.array([[1, 0, 0],
                            [0, 1, 0],
-                           [0.05, 0.05, 1]])
+                           [c, c, 1]])
     true_homog = rotation @ affine @ projective
 
     # Generate source and destination points, according to ground truth homography
@@ -89,13 +55,23 @@ def homog_calc(stub):
     return stub.Process(vision_algorithms_pb2.ExecRequest(homog_calc_args=homog_request))
 
 
+def homog_warp_test(stub, homog_msg):
+    img = np.random.random_sample((3, 300, 600))*255
+    img_msg = parsing.image_to_msg(img)
+    warp_request = vision_algorithms_pb2.HomogWarpRequest(image=img_msg, homography=homog_msg, out_width=10,
+                                                          out_height=10)
+    return stub.Process(vision_algorithms_pb2.ExecRequest(homog_warp_args=warp_request))
+
+
 if __name__ == '__main__':
     # args = parse_args()
     with grpc.insecure_channel('localhost:50051') as channel:
         estimator_stub = vision_algorithms_pb2_grpc.VisionAlgorithmsStub(channel)
         try:
-            response = homog_calc(estimator_stub)
-            print("Client: Received homography ", msg_to_matrix(response.homog_calc_out.homography))
+            response = homog_calc_test(estimator_stub)
+            print("Client: Received homography ", parsing.msg_to_matrix(response.homog_calc_out.homography))
+            response = homog_warp_test(estimator_stub, response.homog_calc_out.homography)
+            print("Client: Received warped image.")
         except grpc.RpcError as rpc_error:
             print('An error has occurred:')
             print(f'  Error Code: {rpc_error.code()}')

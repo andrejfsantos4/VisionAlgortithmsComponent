@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x17vision_algorithms.proto\"\x1d\n\x0c\x46loat1DArray\x12\r\n\x05\x65lems\x18\x01 \x03(\x02\",\n\x0c\x46loat2DArray\x12\x1c\n\x05lines\x18\x01 \x03(\x0b\x32\r.Float1DArray\"/\n\x0c\x46loat3DArray\x12\x1f\n\x08matrices\x18\x01 \x03(\x0b\x32\r.Float2DArray\"\xc5\x02\n\x0b\x45xecRequest\x12\x1f\n\x08klt_args\x18\x01 \x01(\x0b\x32\x0b.KltRequestH\x00\x12,\n\x0fhomog_calc_args\x18\x02 \x01(\x0b\x32\x11.HomogCalcRequestH\x00\x12,\n\x0fhomog_warp_args\x18\x03 \x01(\x0b\x32\x11.HomogWarpRequestH\x00\x12(\n\rsift_det_args\x18\x04 \x01(\x0b\x32\x0f.SiftDetRequestH\x00\x12,\n\x0fsift_match_args\x18\x05 \x01(\x0b\x32\x11.SiftMatchRequestH\x00\x12(\n\rline_det_args\x18\x06 \x01(\x0b\x32\x0f.LineDetRequestH\x00\x12/\n\x11vid_to_frame_args\x18\x07 \x01(\x0b\x32\x12.VidToFrameRequestH\x00\x42\x06\n\x04\x61rgs\"\xc6\x02\n\x0c\x45xecResponse\x12\x1f\n\x07klt_out\x18\x01 \x01(\x0b\x32\x0c.KltResponseH\x00\x12,\n\x0ehomog_calc_out\x18\x02 \x01(\x0b\x32\x12.HomogCalcResponseH\x00\x12,\n\x0ehomog_warp_out\x18\x03 \x01(\x0b\x32\x12.HomogWarpResponseH\x00\x12(\n\x0csift_det_out\x18\x04 \x01(\x0b\x32\x10.SiftDetResponseH\x00\x12,\n\x0esift_match_out\x18\x05 \x01(\x0b\x32\x12.SiftMatchResponseH\x00\x12(\n\x0cline_det_out\x18\x06 \x01(\x0b\x32\x10.LineDetResponseH\x00\x12/\n\x10vid_to_frame_out\x18\x07 \x01(\x0b\x32\x13.VidToFrameResponseH\x00\x42\x06\n\x04\x61rgs\"\x1c\n\nKltRequest\x12\x0e\n\x06\x62labla\x18\x01 \x01(\x02\"\x1d\n\x0bKltResponse\x12\x0e\n\x06\x62labla\x18\x01 \x01(\x02\"\x87\x01\n\x10HomogCalcRequest\x12!\n\nsource_pts\x18\x01 \x01(\x0b\x32\r.Float2DArray\x12\x1f\n\x08\x64\x65st_pts\x18\x02 \x01(\x0b\x32\r.Float2DArray\x12\x15\n\rransac_thresh\x18\x03 \x01(\x02\x12\x18\n\x10max_ransac_iters\x18\x04 \x01(\x05\"6\n\x11HomogCalcResponse\x12!\n\nhomography\x18\x01 \x01(\x0b\x32\r.Float2DArray\"\x12\n\x10HomogWarpRequest\"\x13\n\x11HomogWarpResponse\"\x10\n\x0eSiftDetRequest\"\x11\n\x0fSiftDetResponse\"\x12\n\x10SiftMatchRequest\"\x13\n\x11SiftMatchResponse\"\x10\n\x0eLineDetRequest\"\x11\n\x0fLineDetResponse\"\x13\n\x11VidToFrameRequest\"\x14\n\x12VidToFrameResponse2:\n\x10VisionAlgorithms\x12&\n\x07Process\x12\x0c.ExecRequest\x1a\r.ExecResponseb\x06proto3'
+  serialized_pb=b'\n\x17vision_algorithms.proto\"\x1d\n\x0c\x46loat1DArray\x12\r\n\x05\x65lems\x18\x01 \x03(\x02\",\n\x0c\x46loat2DArray\x12\x1c\n\x05lines\x18\x01 \x03(\x0b\x32\r.Float1DArray\"/\n\x0c\x46loat3DArray\x12\x1f\n\x08matrices\x18\x01 \x03(\x0b\x32\r.Float2DArray\"B\n\x05Image\x12\x1a\n\x03img\x18\x01 \x01(\x0b\x32\r.Float3DArray\x12\r\n\x05width\x18\x02 \x01(\x05\x12\x0e\n\x06height\x18\x03 \x01(\x05\"\xc5\x02\n\x0b\x45xecRequest\x12\x1f\n\x08klt_args\x18\x01 \x01(\x0b\x32\x0b.KltRequestH\x00\x12,\n\x0fhomog_calc_args\x18\x02 \x01(\x0b\x32\x11.HomogCalcRequestH\x00\x12,\n\x0fhomog_warp_args\x18\x03 \x01(\x0b\x32\x11.HomogWarpRequestH\x00\x12(\n\rsift_det_args\x18\x04 \x01(\x0b\x32\x0f.SiftDetRequestH\x00\x12,\n\x0fsift_match_args\x18\x05 \x01(\x0b\x32\x11.SiftMatchRequestH\x00\x12(\n\rline_det_args\x18\x06 \x01(\x0b\x32\x0f.LineDetRequestH\x00\x12/\n\x11vid_to_frame_args\x18\x07 \x01(\x0b\x32\x12.VidToFrameRequestH\x00\x42\x06\n\x04\x61rgs\"\xc6\x02\n\x0c\x45xecResponse\x12\x1f\n\x07klt_out\x18\x01 \x01(\x0b\x32\x0c.KltResponseH\x00\x12,\n\x0ehomog_calc_out\x18\x02 \x01(\x0b\x32\x12.HomogCalcResponseH\x00\x12,\n\x0ehomog_warp_out\x18\x03 \x01(\x0b\x32\x12.HomogWarpResponseH\x00\x12(\n\x0csift_det_out\x18\x04 \x01(\x0b\x32\x10.SiftDetResponseH\x00\x12,\n\x0esift_match_out\x18\x05 \x01(\x0b\x32\x12.SiftMatchResponseH\x00\x12(\n\x0cline_det_out\x18\x06 \x01(\x0b\x32\x10.LineDetResponseH\x00\x12/\n\x10vid_to_frame_out\x18\x07 \x01(\x0b\x32\x13.VidToFrameResponseH\x00\x42\x06\n\x04\x61rgs\"\x1c\n\nKltRequest\x12\x0e\n\x06\x62labla\x18\x01 \x01(\x02\"\x1d\n\x0bKltResponse\x12\x0e\n\x06\x62labla\x18\x01 \x01(\x02\"\x87\x01\n\x10HomogCalcRequest\x12!\n\nsource_pts\x18\x01 \x01(\x0b\x32\r.Float2DArray\x12\x1f\n\x08\x64\x65st_pts\x18\x02 \x01(\x0b\x32\r.Float2DArray\x12\x15\n\rransac_thresh\x18\x03 \x01(\x02\x12\x18\n\x10max_ransac_iters\x18\x04 \x01(\x05\"6\n\x11HomogCalcResponse\x12!\n\nhomography\x18\x01 \x01(\x0b\x32\r.Float2DArray\"s\n\x10HomogWarpRequest\x12\x15\n\x05image\x18\x01 \x01(\x0b\x32\x06.Image\x12!\n\nhomography\x18\x02 \x01(\x0b\x32\r.Float2DArray\x12\x11\n\tout_width\x18\x03 \x01(\x05\x12\x12\n\nout_height\x18\x04 \x01(\x05\"*\n\x11HomogWarpResponse\x12\x15\n\x05image\x18\x01 \x01(\x0b\x32\x06.Image\"\x10\n\x0eSiftDetRequest\"\x11\n\x0fSiftDetResponse\"\x12\n\x10SiftMatchRequest\"\x13\n\x11SiftMatchResponse\"\x10\n\x0eLineDetRequest\"\x11\n\x0fLineDetResponse\"\x13\n\x11VidToFrameRequest\"\x14\n\x12VidToFrameResponse2:\n\x10VisionAlgorithms\x12&\n\x07Process\x12\x0c.ExecRequest\x1a\r.ExecResponseb\x06proto3'
 )
 
 
@@ -121,6 +121,52 @@ _FLOAT3DARRAY = _descriptor.Descriptor(
 )
 
 
+_IMAGE = _descriptor.Descriptor(
+  name='Image',
+  full_name='Image',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='img', full_name='Image.img', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='width', full_name='Image.width', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='height', full_name='Image.height', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=153,
+  serialized_end=219,
+)
+
+
 _EXECREQUEST = _descriptor.Descriptor(
   name='ExecRequest',
   full_name='ExecRequest',
@@ -195,8 +241,8 @@ _EXECREQUEST = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=154,
-  serialized_end=479,
+  serialized_start=222,
+  serialized_end=547,
 )
 
 
@@ -274,8 +320,8 @@ _EXECRESPONSE = _descriptor.Descriptor(
       create_key=_descriptor._internal_create_key,
     fields=[]),
   ],
-  serialized_start=482,
-  serialized_end=808,
+  serialized_start=550,
+  serialized_end=876,
 )
 
 
@@ -306,8 +352,8 @@ _KLTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=810,
-  serialized_end=838,
+  serialized_start=878,
+  serialized_end=906,
 )
 
 
@@ -338,8 +384,8 @@ _KLTRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=840,
-  serialized_end=869,
+  serialized_start=908,
+  serialized_end=937,
 )
 
 
@@ -391,8 +437,8 @@ _HOMOGCALCREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=872,
-  serialized_end=1007,
+  serialized_start=940,
+  serialized_end=1075,
 )
 
 
@@ -423,8 +469,8 @@ _HOMOGCALCRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1009,
-  serialized_end=1063,
+  serialized_start=1077,
+  serialized_end=1131,
 )
 
 
@@ -436,6 +482,34 @@ _HOMOGWARPREQUEST = _descriptor.Descriptor(
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
+    _descriptor.FieldDescriptor(
+      name='image', full_name='HomogWarpRequest.image', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='homography', full_name='HomogWarpRequest.homography', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='out_width', full_name='HomogWarpRequest.out_width', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='out_height', full_name='HomogWarpRequest.out_height', index=3,
+      number=4, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -448,8 +522,8 @@ _HOMOGWARPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1065,
-  serialized_end=1083,
+  serialized_start=1133,
+  serialized_end=1248,
 )
 
 
@@ -461,6 +535,13 @@ _HOMOGWARPRESPONSE = _descriptor.Descriptor(
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
+    _descriptor.FieldDescriptor(
+      name='image', full_name='HomogWarpResponse.image', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -473,8 +554,8 @@ _HOMOGWARPRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1085,
-  serialized_end=1104,
+  serialized_start=1250,
+  serialized_end=1292,
 )
 
 
@@ -498,8 +579,8 @@ _SIFTDETREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1106,
-  serialized_end=1122,
+  serialized_start=1294,
+  serialized_end=1310,
 )
 
 
@@ -523,8 +604,8 @@ _SIFTDETRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1124,
-  serialized_end=1141,
+  serialized_start=1312,
+  serialized_end=1329,
 )
 
 
@@ -548,8 +629,8 @@ _SIFTMATCHREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1143,
-  serialized_end=1161,
+  serialized_start=1331,
+  serialized_end=1349,
 )
 
 
@@ -573,8 +654,8 @@ _SIFTMATCHRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1163,
-  serialized_end=1182,
+  serialized_start=1351,
+  serialized_end=1370,
 )
 
 
@@ -598,8 +679,8 @@ _LINEDETREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1184,
-  serialized_end=1200,
+  serialized_start=1372,
+  serialized_end=1388,
 )
 
 
@@ -623,8 +704,8 @@ _LINEDETRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1202,
-  serialized_end=1219,
+  serialized_start=1390,
+  serialized_end=1407,
 )
 
 
@@ -648,8 +729,8 @@ _VIDTOFRAMEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1221,
-  serialized_end=1240,
+  serialized_start=1409,
+  serialized_end=1428,
 )
 
 
@@ -673,12 +754,13 @@ _VIDTOFRAMERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1242,
-  serialized_end=1262,
+  serialized_start=1430,
+  serialized_end=1450,
 )
 
 _FLOAT2DARRAY.fields_by_name['lines'].message_type = _FLOAT1DARRAY
 _FLOAT3DARRAY.fields_by_name['matrices'].message_type = _FLOAT2DARRAY
+_IMAGE.fields_by_name['img'].message_type = _FLOAT3DARRAY
 _EXECREQUEST.fields_by_name['klt_args'].message_type = _KLTREQUEST
 _EXECREQUEST.fields_by_name['homog_calc_args'].message_type = _HOMOGCALCREQUEST
 _EXECREQUEST.fields_by_name['homog_warp_args'].message_type = _HOMOGWARPREQUEST
@@ -738,9 +820,13 @@ _EXECRESPONSE.fields_by_name['vid_to_frame_out'].containing_oneof = _EXECRESPONS
 _HOMOGCALCREQUEST.fields_by_name['source_pts'].message_type = _FLOAT2DARRAY
 _HOMOGCALCREQUEST.fields_by_name['dest_pts'].message_type = _FLOAT2DARRAY
 _HOMOGCALCRESPONSE.fields_by_name['homography'].message_type = _FLOAT2DARRAY
+_HOMOGWARPREQUEST.fields_by_name['image'].message_type = _IMAGE
+_HOMOGWARPREQUEST.fields_by_name['homography'].message_type = _FLOAT2DARRAY
+_HOMOGWARPRESPONSE.fields_by_name['image'].message_type = _IMAGE
 DESCRIPTOR.message_types_by_name['Float1DArray'] = _FLOAT1DARRAY
 DESCRIPTOR.message_types_by_name['Float2DArray'] = _FLOAT2DARRAY
 DESCRIPTOR.message_types_by_name['Float3DArray'] = _FLOAT3DARRAY
+DESCRIPTOR.message_types_by_name['Image'] = _IMAGE
 DESCRIPTOR.message_types_by_name['ExecRequest'] = _EXECREQUEST
 DESCRIPTOR.message_types_by_name['ExecResponse'] = _EXECRESPONSE
 DESCRIPTOR.message_types_by_name['KltRequest'] = _KLTREQUEST
@@ -779,6 +865,13 @@ Float3DArray = _reflection.GeneratedProtocolMessageType('Float3DArray', (_messag
   # @@protoc_insertion_point(class_scope:Float3DArray)
   })
 _sym_db.RegisterMessage(Float3DArray)
+
+Image = _reflection.GeneratedProtocolMessageType('Image', (_message.Message,), {
+  'DESCRIPTOR' : _IMAGE,
+  '__module__' : 'vision_algorithms_pb2'
+  # @@protoc_insertion_point(class_scope:Image)
+  })
+_sym_db.RegisterMessage(Image)
 
 ExecRequest = _reflection.GeneratedProtocolMessageType('ExecRequest', (_message.Message,), {
   'DESCRIPTOR' : _EXECREQUEST,
@@ -901,8 +994,8 @@ _VISIONALGORITHMS = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=1264,
-  serialized_end=1322,
+  serialized_start=1452,
+  serialized_end=1510,
   methods=[
   _descriptor.MethodDescriptor(
     name='Process',

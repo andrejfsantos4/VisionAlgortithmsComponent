@@ -52,26 +52,27 @@ def msg_to_image(msg, height=None, width=None):
     :return: Numpy array with dimensions (3, Height, Width) or None if msg has wrong format.
     """
     # Get input data size
+    n_channels = len(msg.img.matrices)
     if height is None or width is None:
-        height = msg.img.height
-        width = msg.img.width
-    if len(msg.img.matrices) != 3 and len(msg.img.matrices) != 1:
+        height = msg.height
+        width = msg.width
+    if n_channels != 3 and n_channels != 1:
         logging.error("Detected image with incorrect number of color channels. Must be either 3 (Red Green Blue) or "
                       "1 (grayscale).")
         return None
 
-    image = np.zeros((3, height, width))
-    for i in range(3):
+    image = np.zeros((n_channels, height, width))
+    for i in range(n_channels):
         image[i] = msg_to_matrix(msg.img.matrices[i])
 
-    return image  # TODO test this function
+    return image
 
 
 def image_to_msg(img):
     """Receives an image as numpy array and returns it as a protobuf message of type Image."""
     if img.ndim == 2:  # Expand dimensions if the image is grayscale
         img = np.expand_dims(img, axis=0)
-    elif img.dim != 3:
+    elif img.ndim != 3:
         logging.error("Detected image with incorrect number dimensions. Must be either 3xMxN (Color image) or "
                       "MxN (grayscale).")
         return vision_algorithms_pb2.Image()
@@ -85,4 +86,4 @@ def image_to_msg(img):
     for i in range(img.shape[0]):
         img_msg.img.matrices.append(matrix_to_msg(img[i]))
 
-    return img_msg  # TODO test this function
+    return img_msg
