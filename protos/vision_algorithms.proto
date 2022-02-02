@@ -1,0 +1,119 @@
+//TODO: Fazer caixinha que tem os algoritmos e outra que recebe um .py e bytes de entrada e saída
+
+//TODO: seguir tutorial criar servidor em Python
+//TODO: seguir tutorial criar cliente
+//TODO: criar dockerfile a partir do dockerfile do opencv genérico
+
+syntax = "proto3";
+
+// Service that receives a request, executes requested algorithm on that image
+// and returns the corresponding output
+// :param ExecRequest: The request specifying the algorithm and its inputs
+// :returns: The corresponding output from the algorithm
+service VisionAlgorithms {
+  rpc Process(ExecRequest) returns (ExecResponse);
+}
+
+//Message for 1D arrays of floats
+message Float1DArray {
+  repeated float elems = 1;
+}
+
+//Message for 2D arrays of floats
+message Float2DArray {
+  repeated Float1DArray lines = 1;
+}
+
+//Message for 3D arrays of floats
+message Float3DArray {
+  repeated Float2DArray matrices = 1;
+}
+
+//Message for color images
+message Image {
+  Float3DArray img = 1;
+  int32 width = 2;
+  int32 height = 3;
+}
+
+// Input message type containing message of specific type for desired algorithm.
+message ExecRequest {
+  oneof args {
+    KltRequest klt_args = 1;                 //One iteration of KLT tracker
+    HomogCalcRequest homog_calc_args = 2;       //Estimate a homography to fit data
+    HomogWarpRequest homog_warp_args = 3;     //Apply homography to image
+    SiftDetRequest sift_det_args = 4;         //Detect SIFT features
+    SiftMatchRequest sift_match_args = 5;     //Match SIFT features
+    LineDetRequest line_det_args = 6;    //Detect lines/edges with Hough Transform
+    VidToFrameRequest vid_to_frame_args = 7;   //Output frames from input video
+  }
+}
+
+// Input message type containing output produced by the algorithm
+message ExecResponse {
+  oneof args {
+    KltResponse klt_out = 1;
+    HomogCalcResponse homog_calc_out = 2;
+    HomogWarpResponse homog_warp_out = 3;
+    SiftDetResponse sift_det_out = 4;
+    SiftMatchResponse sift_match_out = 5;
+    LineDetResponse line_det_out = 6;
+    VidToFrameResponse vid_to_frame_out = 7;
+  }
+}
+
+message KltRequest {
+  // optionally Booleans to identify if value was defined or not
+  float blabla = 1;
+}
+
+message KltResponse {
+  float blabla = 1;
+}
+
+message HomogCalcRequest {
+  Float2DArray source_pts = 1;  // Correspondences in source frame
+  Float2DArray dest_pts = 2;  // Correspondences in destination frame
+  float ransac_thresh = 3;  // Maximum re-projection error (in pixels)
+                                      // to consider as inlier
+  int32 max_ransac_iters = 4;  // Maximum number of RANSAC iterations
+}
+
+message HomogCalcResponse {
+  Float2DArray homography = 1;  // Estimated homography
+}
+
+message HomogWarpRequest {
+  Image image = 1;
+  Float2DArray homography = 2;
+  int32 out_width = 3;  // Width of output image
+  int32 out_height = 4;  // Height of output image
+}
+
+message HomogWarpResponse {
+  Image image = 1;
+}
+
+message SiftDetRequest {
+}
+
+message SiftDetResponse {
+}
+
+message SiftMatchRequest {
+}
+
+message SiftMatchResponse {
+}
+
+message LineDetRequest {
+}
+
+message LineDetResponse {
+}
+
+message VidToFrameRequest {
+}
+
+message VidToFrameResponse {
+}
