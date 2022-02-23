@@ -28,6 +28,10 @@ def msg_to_matrix(msg, n_lines=None, n_cols=None):
     :param n_cols: (Optional) Width of array. If not indicated, it is inferred from the first line of the array.
     :return: Numpy array or None if msg has wrong format.
     """
+    if msg.lines is None:
+        logging.error("Detected empty array message.")
+        return None
+
     # Get input data size
     if n_lines is None or n_cols is None:
         n_lines = len(msg.lines)

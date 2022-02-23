@@ -1,7 +1,5 @@
 //TODO: Fazer caixinha que tem os algoritmos e outra que recebe um .py e bytes de entrada e saída
 
-//TODO: seguir tutorial criar servidor em Python
-//TODO: seguir tutorial criar cliente
 //TODO: criar dockerfile a partir do dockerfile do opencv genérico
 
 syntax = "proto3";
@@ -74,8 +72,7 @@ message KltResponse {
 message HomogCalcRequest {
   Float2DArray source_pts = 1;  // Correspondences in source frame
   Float2DArray dest_pts = 2;  // Correspondences in destination frame
-  float ransac_thresh = 3;  // Maximum re-projection error (in pixels)
-                                      // to consider as inlier
+  float ransac_thresh = 3;  // Maximum re-projection error (in pixels) to consider as inlier
   int32 max_ransac_iters = 4;  // Maximum number of RANSAC iterations
 }
 
@@ -95,15 +92,26 @@ message HomogWarpResponse {
 }
 
 message SiftDetRequest {
+  Image image = 1;
+  Float2DArray points = 2;  // (optional) Locations of keypoints in image
+  int32 n_features = 3;  // (optional) Number of best features to retain
+  float contrast_thresh = 4; // (optional) Contrast threshold
+  float edge_thresh = 5;  // (optional) Edge threshold
+  float sigma = 6;  // (optional) Sigma of Gaussian applied to input image
 }
 
 message SiftDetResponse {
+  Float2DArray keypoints = 1;
+  Float2DArray descriptors = 2;
 }
 
 message SiftMatchRequest {
+  Float2DArray d1 = 1;  // Descriptors for keypoints in first image
+  Float2DArray d2 = 2;  // Descriptors for keypoints in second image
 }
 
 message SiftMatchResponse {
+  Float2DArray matches = 1;  // Array with indexes of correspondences. In first column are idxs from first image.
 }
 
 message LineDetRequest {
