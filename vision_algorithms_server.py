@@ -54,6 +54,7 @@ def homog_warp(request):
 
     # If homography is applied to array of 2D points
     if not request.is_img:
+        logging.info("Applying homography to points.")
         pts = parsing.msg_to_matrix(request.points)
         if pts is None:
             return vision_algorithms_pb2.ExecResponse(homog_warp_out=vision_algorithms_pb2.HomogWarpResponse())
@@ -72,6 +73,7 @@ def homog_warp(request):
 
     # If homography is applied to image
     else:
+        logging.info("Applying homography to image.")
         width = request.out_width
         height = request.out_height
         if width <= 0 or height <= 0:
@@ -90,11 +92,12 @@ def homog_warp(request):
 
 def sift_det(request):
     """Detects SIFT features in RGB image and returns their positions and descriptors."""
+    logging.info("Detecting SIFT features in image.")
     img = parsing.msg_to_image(request.image)
     if img is None:
         return vision_algorithms_pb2.ExecResponse(sift_det_out=vision_algorithms_pb2.SiftDetResponse())
 
-    if request.points is not None:
+    if request.points.lines:
         keypts = parsing.msg_to_matrix(request.points)
         if np.any((keypts < 0) | (keypts[:, 0] >= img.shape[0]) | (keypts[:, 1] >= img.shape[1])):
             logging.error("Specified keypoints have invalid coordinates.")
@@ -131,17 +134,22 @@ def sift_det(request):
         sig = 1.6
 
     sift = cv2.SIFT_create(nfeatures=n_features, contrastThreshold=contrast_thr, edgeThreshold=edge_thr, sigma=sig)
-    gray_img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    gray_img = cv2.cvtColor(img.astype('uint8'), cv2.COLOR_RGB2GRAY)
     if keypts is None:
         keypts = sift.detect(gray_img, None)
     keypts, des = sift.compute(gray_img, keypts)
 
+    final_keypts = np.zeros((len(keypts), 2))
+    for i in range(len(keypts)):
+        final_keypts[i, :] = np.array(keypts[i].pt)
+
     return vision_algorithms_pb2.ExecResponse(sift_det_out=vision_algorithms_pb2.SiftDetResponse(
-        keypoints=parsing.array_to_msg(keypts), descriptors=parsing.array_to_msg(des)))
+        keypoints=parsing.matrix_to_msg(final_keypts), descriptors=parsing.matrix_to_msg(des)))
 
 
 def sift_match(request):
     """Obtains correspondences between two sets of SIFT features descriptors."""
+    logging.info("Matching SIFT descriptors.")
     des1 = parsing.msg_to_matrix(request.d1)
     des2 = parsing.msg_to_matrix(request.d2)
 

@@ -28,10 +28,7 @@ def msg_to_matrix(msg, n_lines=None, n_cols=None):
     :param n_cols: (Optional) Width of array. If not indicated, it is inferred from the first line of the array.
     :return: Numpy array or None if msg has wrong format.
     """
-    if msg is None:
-        logging.error("Detected empty array message.")
-        return None
-    if msg.lines is None:
+    if not msg or not msg.lines:
         logging.error("Detected empty array message.")
         return None
 
@@ -58,19 +55,23 @@ def msg_to_image(msg, height=None, width=None):
     :param width: (Optional) Width of image. If not indicated, it is inferred from the first line.
     :return: Numpy array with dimensions (3, Height, Width) or None if msg has wrong format.
     """
+    if not msg or not msg.img or not msg.img.matrices:
+        logging.error("Received empty image message.")
+        return None
+
     # Get input data size
     n_channels = len(msg.img.matrices)
     if height is None or width is None:
         height = msg.height
         width = msg.width
     if n_channels != 3 and n_channels != 1:
-        logging.error("Detected image with incorrect number of color channels. Must be either 3 (Red Green Blue) or "
+        logging.error("Detected image with incorrect number of color channels. Must be either 3 (RGB) or "
                       "1 (grayscale).")
         return None
 
-    image = np.zeros((n_channels, height, width))
+    image = np.zeros((height, width, n_channels))
     for i in range(n_channels):
-        image[i] = msg_to_matrix(msg.img.matrices[i])
+        image[:, :, i] = msg_to_matrix(msg.img.matrices[i])
 
     return image
 
@@ -85,12 +86,12 @@ def image_to_msg(img):
         return vision_algorithms_pb2.Image()
 
     # Get image size
-    img_height = img.shape[1]
-    img_width = img.shape[2]
+    img_height = img.shape[0]
+    img_width = img.shape[1]
 
     # Build Image message
     img_msg = vision_algorithms_pb2.Image(width=img_width, height=img_height)
-    for i in range(img.shape[0]):
-        img_msg.img.matrices.append(matrix_to_msg(img[i]))
+    for i in range(img.shape[2]):
+        img_msg.img.matrices.append(matrix_to_msg(img[:, :, i]))
 
     return img_msg

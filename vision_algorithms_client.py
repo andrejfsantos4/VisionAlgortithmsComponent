@@ -64,13 +64,13 @@ def sift_det_test(stub):
 
     sift_request = vision_algorithms_pb2.SiftDetRequest(image=img_msg)
     resp = stub.Process(vision_algorithms_pb2.ExecRequest(sift_det_args=sift_request))
-    keypts = parsing.msg_to_matrix(resp.sift_det_out.keypoints)
-
-    gray_img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-    img = cv2.drawKeypoints(gray_img, keypts, img, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-    cv2.imshow(img)
-    if cv2.waitKey(1000) & 0xFF == ord('q'):
-        cv2.destroyAllWindows()
+    # keypts = parsing.msg_to_matrix(resp.sift_det_out.keypoints)
+    #
+    # gray_img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    # img = cv2.drawKeypoints(gray_img, keypts, img, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+    # cv2.imshow(img)
+    # if cv2.waitKey(1000) & 0xFF == ord('q'):
+    #     cv2.destroyAllWindows()
 
     return resp
 
@@ -82,6 +82,7 @@ if __name__ == '__main__':
         try:
             # response = homog_calc_test(estimator_stub)
             # print("Client: Received homography ", parsing.msg_to_matrix(response.homog_calc_out.homography))
+
             # response = homog_warp_test(estimator_stub, response.homog_calc_out.homography)
             # print("Client: Received warped image.")
 
