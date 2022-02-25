@@ -1,17 +1,11 @@
 import logging
 import grpc
 import numpy as np
+import cv2
 
 import vision_algorithms_pb2
 import vision_algorithms_pb2_grpc
 import parsing
-
-# def parse_args():
-#     parser = argparse.ArgumentParser(description='Client for testing Vision Algorithms component.')
-#     parser.add_argument('--algorithm', metavar='algorithm',
-#                         help='Algorithm to test (homog_calc, klt, etc)')
-#
-#     return parser.parse_args()
 
 
 def get_request_homog_calc(matrix1, matrix2):
@@ -56,11 +50,29 @@ def homog_calc_test(stub):
 
 
 def homog_warp_test(stub, homog_msg):
-    img = np.random.random_sample((3, 300, 600))*255
+    img = np.random.random_sample((3, 300, 600)) * 255
     img_msg = parsing.image_to_msg(img)
     warp_request = vision_algorithms_pb2.HomogWarpRequest(image=img_msg, homography=homog_msg, out_width=10,
                                                           out_height=10)
     return stub.Process(vision_algorithms_pb2.ExecRequest(homog_warp_args=warp_request))
+
+
+def sift_det_test(stub):
+    img = cv2.imread('car.jpg')
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img_msg = parsing.image_to_msg(img)
+
+    sift_request = vision_algorithms_pb2.SiftDetRequest(image=img_msg)
+    resp = stub.Process(vision_algorithms_pb2.ExecRequest(sift_det_args=sift_request))
+    keypts = parsing.msg_to_matrix(resp.sift_det_out.keypoints)
+
+    gray_img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    img = cv2.drawKeypoints(gray_img, keypts, img, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+    cv2.imshow(img)
+    if cv2.waitKey(1000) & 0xFF == ord('q'):
+        cv2.destroyAllWindows()
+
+    return resp
 
 
 if __name__ == '__main__':
@@ -68,10 +80,13 @@ if __name__ == '__main__':
     with grpc.insecure_channel('localhost:50051') as channel:
         estimator_stub = vision_algorithms_pb2_grpc.VisionAlgorithmsStub(channel)
         try:
-            response = homog_calc_test(estimator_stub)
-            print("Client: Received homography ", parsing.msg_to_matrix(response.homog_calc_out.homography))
-            response = homog_warp_test(estimator_stub, response.homog_calc_out.homography)
-            print("Client: Received warped image.")
+            # response = homog_calc_test(estimator_stub)
+            # print("Client: Received homography ", parsing.msg_to_matrix(response.homog_calc_out.homography))
+            # response = homog_warp_test(estimator_stub, response.homog_calc_out.homography)
+            # print("Client: Received warped image.")
+
+            response = sift_det_test(estimator_stub)
+            print("Client: Received feature descriptors.")
         except grpc.RpcError as rpc_error:
             print('An error has occurred:')
             print(f'  Error Code: {rpc_error.code()}')

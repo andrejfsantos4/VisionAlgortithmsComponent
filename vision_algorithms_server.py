@@ -1,9 +1,9 @@
 import logging
 from concurrent import futures
 
-import cv2
 import grpc
 import numpy as np
+import cv2
 
 import parsing
 import vision_algorithms_pb2
@@ -47,28 +47,49 @@ def homog_calc(request):
 
 
 def homog_warp(request):
-    """Applies a homography to an image and returns the resulting image."""
-    # Extract arguments from request message
-    width = request.out_width
-    height = request.out_height
-    if width is None or height is None:
-        logging.error("The request must specify the output image width and height.")
-    elif width <= 0 or height <= 0:
-        logging.error("Output width and height must be positive integers.")
-
+    """Applies a homography to an image or to an array of points and returns the transformed image/points."""
     homography = parsing.msg_to_matrix(request.homography, n_lines=3, n_cols=3)
-    image = parsing.msg_to_image(request.image)
-    if homography is None or image is None:
+    if homography is None:
         return vision_algorithms_pb2.ExecResponse(homog_warp_out=vision_algorithms_pb2.HomogWarpResponse())
 
-    # Apply the homography and return transformed image
-    image_warp = cv2.warpPerspective(image, homography, (width, height))
-    image_msg = parsing.image_to_msg(image_warp)
-    return vision_algorithms_pb2.ExecResponse(homog_warp_out=vision_algorithms_pb2.HomogWarpResponse(image=image_msg))
+    # If homography is applied to array of 2D points
+    if not request.is_img:
+        pts = parsing.msg_to_matrix(request.points)
+        if pts is None:
+            return vision_algorithms_pb2.ExecResponse(homog_warp_out=vision_algorithms_pb2.HomogWarpResponse())
+        if pts.shape[0] != 2:  # Confirm that points have shape 2xN
+            pts = pts.T
+
+        pts = np.concatenate((pts, np.ones((1, pts.shape[1]))), axis=0)
+        transf_pts = homography @ pts
+        transf_pts[0, :] = transf_pts[0, :] / transf_pts[2, :]
+        transf_pts[1, :] = transf_pts[1, :] / transf_pts[2, :]
+        transf_pts = np.delete(transf_pts, 2, 0)
+
+        pts_msg = parsing.matrix_to_msg(transf_pts.T)
+        return vision_algorithms_pb2.ExecResponse(
+            homog_warp_out=vision_algorithms_pb2.HomogWarpResponse(points=pts_msg))
+
+    # If homography is applied to image
+    else:
+        width = request.out_width
+        height = request.out_height
+        if width <= 0 or height <= 0:
+            logging.error("Output width and height must be positive integers.")
+
+        image = parsing.msg_to_image(request.image)
+        if image is None:
+            return vision_algorithms_pb2.ExecResponse(homog_warp_out=vision_algorithms_pb2.HomogWarpResponse())
+
+        # Apply the homography and return transformed image
+        image_warp = cv2.warpPerspective(image, homography, (width, height))
+        image_msg = parsing.image_to_msg(image_warp)
+        return vision_algorithms_pb2.ExecResponse(
+            homog_warp_out=vision_algorithms_pb2.HomogWarpResponse(image=image_msg))
 
 
 def sift_det(request):
-    """Detects SIFT features in image and returns their positions and descriptors."""
+    """Detects SIFT features in RGB image and returns their positions and descriptors."""
     img = parsing.msg_to_image(request.image)
     if img is None:
         return vision_algorithms_pb2.ExecResponse(sift_det_out=vision_algorithms_pb2.SiftDetResponse())
@@ -130,11 +151,11 @@ def sift_match(request):
 
     # Get best matches
     matches = []
-    for m, n in matches:
+    for m, n in aux_matches:
         if m.distance < 0.75 * n.distance:
-            matches.append([m.trainIdx, m.queryIdx])
+            matches.append([m.queryIdx, m.trainIdx])
     matches_array = np.array(matches)
-    #TODO finish this
+
     return vision_algorithms_pb2.ExecResponse(sift_match_out=vision_algorithms_pb2.SiftMatchResponse(
         matches=parsing.array_to_msg(matches_array)))
 
