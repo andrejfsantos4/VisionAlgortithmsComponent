@@ -4,6 +4,7 @@ from concurrent import futures
 import grpc
 import numpy as np
 import cv2
+import grpc_reflection.v1alpha.reflection as grpc_reflection
 
 import parsing
 import vision_algorithms_pb2
@@ -191,7 +192,15 @@ def serve():
     server = grpc.server(futures.ThreadPoolExecutor())
     vision_algorithms_pb2_grpc.add_VisionAlgorithmsServicer_to_server(
         VisionAlgorithmsServicer(), server)
-    server.add_insecure_port('[::]:50051')
+
+    # Add reflection
+    service_names = (
+        vision_algorithms_pb2.DESCRIPTOR.services_by_name['VisionAlgorithms'].full_name,
+        grpc_reflection.SERVICE_NAME
+    )
+    grpc_reflection.enable_server_reflection(service_names, server)
+
+    server.add_insecure_port('[::]:8061')
     server.start()
     logging.info("Successfully started and waiting for connections..")
     server.wait_for_termination()

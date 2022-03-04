@@ -50,10 +50,10 @@ def homog_calc_test(stub):
 
 
 def homog_warp_test(stub, homog_msg):
-    img = np.random.random_sample((3, 300, 600)) * 255
+    img = np.random.random_sample((300, 600, 3)) * 255
     img_msg = parsing.image_to_msg(img)
-    warp_request = vision_algorithms_pb2.HomogWarpRequest(image=img_msg, homography=homog_msg, out_width=10,
-                                                          out_height=10)
+    warp_request = vision_algorithms_pb2.HomogWarpRequest(is_img=True, image=img_msg, homography=homog_msg,
+                                                          out_width=10, out_height=10)
     return stub.Process(vision_algorithms_pb2.ExecRequest(homog_warp_args=warp_request))
 
 
@@ -77,14 +77,14 @@ def sift_det_test(stub):
 
 if __name__ == '__main__':
     # args = parse_args()
-    with grpc.insecure_channel('localhost:50051') as channel:
+    with grpc.insecure_channel('localhost:8061') as channel:
         estimator_stub = vision_algorithms_pb2_grpc.VisionAlgorithmsStub(channel)
         try:
-            # response = homog_calc_test(estimator_stub)
-            # print("Client: Received homography ", parsing.msg_to_matrix(response.homog_calc_out.homography))
+            response = homog_calc_test(estimator_stub)
+            print("Client: Received homography ", parsing.msg_to_matrix(response.homog_calc_out.homography))
 
-            # response = homog_warp_test(estimator_stub, response.homog_calc_out.homography)
-            # print("Client: Received warped image.")
+            response = homog_warp_test(estimator_stub, response.homog_calc_out.homography)
+            print("Client: Received warped image.")
 
             response = sift_det_test(estimator_stub)
             print("Client: Received feature descriptors.")
