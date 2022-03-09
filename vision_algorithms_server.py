@@ -207,5 +207,5 @@ def serve():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(format='Server %(levelname)s: %(message)s', level=logging.INFO)
+    logging.basicConfig(format='Server %(levelname)s: %(message)s', level=logging.ERROR)
     serve()

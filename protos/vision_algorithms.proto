@@ -1,7 +1,5 @@
 //TODO: Fazer caixinha que tem os algoritmos e outra que recebe um .py e bytes de entrada e saída
 
-//TODO: criar dockerfile a partir do dockerfile do opencv genérico
-
 syntax = "proto3";
 
 // Service that receives a request, executes requested algorithm on that image

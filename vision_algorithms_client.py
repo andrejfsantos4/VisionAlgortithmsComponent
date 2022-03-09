@@ -17,8 +17,10 @@ def get_request_homog_calc(matrix1, matrix2):
     """
     matrix1_msg = parsing.matrix_to_msg(matrix1)
     matrix2_msg = parsing.matrix_to_msg(matrix2)
-    return vision_algorithms_pb2.HomogCalcRequest(source_pts=matrix1_msg, dest_pts=matrix2_msg, ransac_thresh=5,
-                                                  max_ransac_iters=200)
+    # return vision_algorithms_pb2.HomogCalcRequest(source_pts=matrix1_msg, dest_pts=matrix2_msg, ransac_thresh=5,
+    #                                               max_ransac_iters=200)
+    return vision_algorithms_pb2.HomogCalcRequest(source_pts=matrix1_msg, dest_pts=matrix2_msg, ransac_thresh=0,
+                                                  max_ransac_iters=0)
 
 
 def homog_calc_test(stub):
@@ -39,13 +41,35 @@ def homog_calc_test(stub):
     true_homog = rotation @ affine @ projective
 
     # Generate source and destination points, according to ground truth homography
-    src_pts = np.random.rand(2, 5) * 100
-    dst_pts = true_homog @ np.r_[src_pts, np.ones((1, src_pts.shape[1]))]
-    dst_pts[0, :] = dst_pts[0, :] / dst_pts[2, :]
-    dst_pts[1, :] = dst_pts[1, :] / dst_pts[2, :]
-    dst_pts = np.delete(dst_pts, 2, 0)
+    # src_pts = np.random.rand(2, 5) * 100
+    # dst_pts = true_homog @ np.r_[src_pts, np.ones((1, src_pts.shape[1]))]
+    # dst_pts[0, :] = dst_pts[0, :] / dst_pts[2, :]
+    # dst_pts[1, :] = dst_pts[1, :] / dst_pts[2, :]
+    # dst_pts = np.delete(dst_pts, 2, 0)
 
-    homog_request = get_request_homog_calc(src_pts.T, dst_pts.T)
+    # Hard coded points for homography
+    # Camera 176
+    # src_pts = np.array([[479, 301],
+    #                     [177, 261],
+    #                     [465, 139],
+    #                     [227, 423]])
+    # dst_pts = np.array([[240, 409],
+    #                     [209, 389],
+    #                     [245, 327],
+    #                     [225, 428]])
+    #Camera 083
+    src_pts = np.array([[225, 256],
+                        [567, 270],
+                        [634, 388],
+                        [1175, 381]])
+
+    dst_pts = np.array([[317, 181],
+                        [423, 209],
+                        [436, 282],
+                        [538, 279]])
+    homog_request = get_request_homog_calc(src_pts, dst_pts)
+
+    # homog_request = get_request_homog_calc(src_pts.T, dst_pts.T)
     return stub.Process(vision_algorithms_pb2.ExecRequest(homog_calc_args=homog_request))
 
 
@@ -83,11 +107,11 @@ if __name__ == '__main__':
             response = homog_calc_test(estimator_stub)
             print("Client: Received homography ", parsing.msg_to_matrix(response.homog_calc_out.homography))
 
-            response = homog_warp_test(estimator_stub, response.homog_calc_out.homography)
-            print("Client: Received warped image.")
+            # response = homog_warp_test(estimator_stub, response.homog_calc_out.homography)
+            # print("Client: Received warped image.")
 
-            response = sift_det_test(estimator_stub)
-            print("Client: Received feature descriptors.")
+            # response = sift_det_test(estimator_stub)
+            # print("Client: Received feature descriptors.")
         except grpc.RpcError as rpc_error:
             print('An error has occurred:')
             print(f'  Error Code: {rpc_error.code()}')
