@@ -157,7 +157,6 @@ def traffic_test(h, stub):
 
 
 if __name__ == '__main__':
-    # args = parse_args()
     with grpc.insecure_channel('localhost:8061') as channel:
         estimator_stub = vision_algorithms_pb2_grpc.VisionAlgorithmsStub(channel)
         try:
