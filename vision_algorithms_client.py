@@ -48,7 +48,7 @@ def homog_calc_test(stub):
     # dst_pts = np.delete(dst_pts, 2, 0)
 
     # Hard coded points for homography
-    # Camera 176
+    # Camera 176 ---------------------
     # src_pts = np.array([[479, 301],
     #                     [177, 261],
     #                     [465, 139],
@@ -57,19 +57,29 @@ def homog_calc_test(stub):
     #                     [209, 389],
     #                     [245, 327],
     #                     [225, 428]])
-    #Camera 083
-    src_pts = np.array([[225, 256],
-                        [567, 270],
-                        [634, 388],
-                        [1175, 381]])
+    # Camera 083 ---------------------
+    # src_pts = np.array([[225, 256],
+    #                     [567, 270],
+    #                     [634, 388],
+    #                     [1175, 381]])
+    # dst_pts = np.array([[317, 181],
+    #                     [423, 209],
+    #                     [436, 282],
+    #                     [538, 279]])
+    # Camera 104 ---------------------
+    src_pts = np.array([[933, 598],
+                        [383, 353],
+                        [1075, 177],
+                        [881, 131],
+                        [56, 654]])
 
-    dst_pts = np.array([[317, 181],
-                        [423, 209],
-                        [436, 282],
-                        [538, 279]])
+    dst_pts = np.array([[87, 469],
+                        [60, 431],
+                        [188, 380],
+                        [149, 343],
+                        [37, 466]])
     homog_request = get_request_homog_calc(src_pts, dst_pts)
 
-    # homog_request = get_request_homog_calc(src_pts.T, dst_pts.T)
     return stub.Process(vision_algorithms_pb2.ExecRequest(homog_calc_args=homog_request))
 
 
@@ -99,14 +109,62 @@ def sift_det_test(stub):
     return resp
 
 
+def traffic_test(h, stub):
+    cam = cv2.imread('delete/cam104.jpg')
+    mapi = cv2.imread('delete/map_img_104.png')
+
+    # Grid projection test
+    # pts = []
+    # for pt in np.ndindex(12, 7):
+    #     pts.append(pt)
+    # pts = np.array(pts)
+    # pts[:, 0] = pts[:, 0]*100
+    # pts[:, 1] = pts[:, 1]*100
+    # Line projection test
+    pts = np.array([[96, 391],
+                    [196, 344],
+                    [313, 300],
+                    [371, 279],
+                    [429, 257],
+                    [482, 240],
+                    [534, 224],
+                    [580, 212],
+                    [631, 195],
+                    [676, 183],
+                    [722, 172],
+                    [764, 161],
+                    [808, 149],
+                    [848, 141]])
+
+    pts_msg = parsing.matrix_to_msg(pts.T)
+    homog_msg = parsing.matrix_to_msg(h)
+    warp_request = vision_algorithms_pb2.HomogWarpRequest(is_img=False, points=pts_msg, homography=homog_msg)
+    resp = stub.Process(vision_algorithms_pb2.ExecRequest(homog_warp_args=warp_request))
+    warp_pts = parsing.msg_to_matrix(resp.homog_warp_out.points)
+
+    counter = 0
+    for warp_pt in warp_pts:
+        mapi = cv2.circle(mapi, (int(warp_pt[0]), int(warp_pt[1])), radius=6, color=(counter, counter, 255), thickness=-1)
+        counter += 10
+    counter = 0
+    for cam_pt in pts:
+        cam = cv2.circle(cam, (int(cam_pt[0]), int(cam_pt[1])), radius=6, color=(counter, counter, 255), thickness=-1)
+        counter += 10
+
+    cv2.imshow('image', mapi)
+    if cv2.waitKey(10000) & 0xFF == ord('q'):
+        cv2.destroyAllWindows()
+
+
 if __name__ == '__main__':
     # args = parse_args()
     with grpc.insecure_channel('localhost:8061') as channel:
         estimator_stub = vision_algorithms_pb2_grpc.VisionAlgorithmsStub(channel)
         try:
             response = homog_calc_test(estimator_stub)
-            print("Client: Received homography ", parsing.msg_to_matrix(response.homog_calc_out.homography))
-
+            homog = parsing.msg_to_matrix(response.homog_calc_out.homography)
+            print("Client: Received homography ", homog)
+            traffic_test(homog, estimator_stub)
             # response = homog_warp_test(estimator_stub, response.homog_calc_out.homography)
             # print("Client: Received warped image.")
 

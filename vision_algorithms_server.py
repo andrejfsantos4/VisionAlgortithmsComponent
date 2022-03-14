@@ -12,7 +12,12 @@ import vision_algorithms_pb2_grpc
 
 
 def homog_calc(request):
-    """Estimates a homography that maps source_pts into dest_pts."""
+    """
+    Estimates a homography that maps source_pts into dest_pts.
+
+    Uses least-squares method as initial estimate than is subsequently refined with the Levenberg-Marquardt method.
+    RANSAC can also be used in the presence of outliers.
+    """
 
     if len(request.source_pts.lines) != len(request.dest_pts.lines):
         logging.error("Source and destinations arrays have a different number of points.")
